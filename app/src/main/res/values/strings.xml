@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">ScanerKuKu</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="not_connected_to_an_access_point">Not connected to an access point</string>
+    <string name="connected_to_an_access_point">Connected to an access point</string>
+    <string name="wifi_adapter_is_off">Wi-Fi adapter is OFF</string>
+    <string name="failed_to_save_empty_settings">failed to save empty settings</string>
+    <string name="wrong_password">wrong password</string>
+
+    <string name="error_due_zipping">error due zipping</string>
+    <string name="zipping_is_finished">zipping is finished</string>
+    <string name="service_notification_name">MagService</string>
+
+
+</resources>
