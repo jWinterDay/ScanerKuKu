@@ -94,8 +94,8 @@ public class MainService extends Service {
                                 String sn = support.getSerialNum();
                                 String host = settings.getString("host", "").toString();
                                 String uuid = support.getUuid(ctx);
-                                //String curTimeStamp = support.getCurTimeStamp();
-                                Date curTimeStamp = support.getCurTimeStamp();
+                                String curTimeStamp = support.getFormattedDate();
+                                //Date curTimeStamp = support.getCurTimeStamp();
 
 
                                 Map<String, String> params = new HashMap<>();
@@ -166,6 +166,6 @@ public class MainService extends Service {
     }
 
     private void startForeground() {
-        startForeground(Support.NOTIFY_ID, getMyActivityNotification("serive started"));
+        startForeground(Support.NOTIFY_ID, getMyActivityNotification("service started"));
     }
 }

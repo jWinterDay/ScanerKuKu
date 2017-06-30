@@ -128,4 +128,9 @@ public class MainActivity extends Activity {
 
         startService(new Intent(this, MainService.class));
     }
+
+    //btn stop
+    public void Stop(View v) {
+        stopService(new Intent(this, MainService.class));
+    }
 }

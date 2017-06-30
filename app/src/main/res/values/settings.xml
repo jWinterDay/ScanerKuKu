@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="host">http://192.168.83.221:8000</string>
+    <string name="host">http://192.168.83.221:3000</string>
     <string name="urlpath">/upload_log/</string>
 
     <!--<string name="server">http://192.168.0.103:8000/send_scaner_info/</string>-->
