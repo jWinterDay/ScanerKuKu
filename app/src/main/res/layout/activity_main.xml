@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fillViewport="true"
@@ -9,7 +10,9 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="?android:attr/colorForeground">
+        android:background="?android:attr/colorForeground"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <!--host-->
         <TextView
@@ -17,16 +20,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="host"/>
+
         <EditText
             android:id="@+id/etHost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lbHost"
             android:ems="10"
             android:inputType="textPersonName"
             android:textColor="@android:color/black"
             android:textColorHighlight="@android:color/holo_green_light"
-            android:textSize="14sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/lbHost"/>
+            android:textCursorDrawable="@color/etCursor"
+            android:textSize="14sp" />
 
         <!--ferry-->
         <TextView
@@ -35,16 +40,18 @@
             android:layout_height="wrap_content"
             android:text="ferry"
             android:layout_below="@+id/etHost"/>
+
         <EditText
             android:id="@+id/etFerry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lbFerry"
             android:ems="10"
             android:inputType="textPersonName"
             android:textColor="@android:color/black"
             android:textColorHighlight="@android:color/holo_green_light"
-            android:textSize="14sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/lbFerry"/>
+            android:textCursorDrawable="@color/etCursor"
+            android:textSize="14sp" />
 
         <!--network type-->
         <TextView
@@ -53,16 +60,18 @@
             android:layout_height="wrap_content"
             android:text="network type"
             android:layout_below="@+id/etFerry"/>
+
         <EditText
             android:id="@+id/etNetworkType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lbNetworkType"
             android:ems="10"
             android:inputType="textPersonName"
             android:textColor="@android:color/black"
             android:textColorHighlight="@android:color/holo_green_light"
-            android:textSize="14sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/lbNetworkType"/>
+            android:textCursorDrawable="@color/etCursor"
+            android:textSize="14sp" />
 
         <!--source folder-->
         <TextView
@@ -71,16 +80,18 @@
             android:layout_height="wrap_content"
             android:text="source folder"
             android:layout_below="@+id/etNetworkType"/>
+
         <EditText
             android:id="@+id/etSourceFolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lbSourceFolder"
             android:ems="10"
             android:inputType="textPersonName"
             android:textColor="@android:color/black"
             android:textColorHighlight="@android:color/holo_green_light"
-            android:textSize="14sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/lbSourceFolder"/>
+            android:textCursorDrawable="@color/etCursor"
+            android:textSize="14sp" />
 
         <!--dest zip file-->
         <TextView
@@ -89,15 +100,17 @@
             android:layout_height="wrap_content"
             android:text="source folder"
             android:layout_below="@+id/etSourceFolder"/>
+
         <EditText
             android:id="@+id/etDestZipFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lbDestZipFile"
             android:inputType="textPersonName"
             android:textColor="@android:color/black"
             android:textColorHighlight="@android:color/holo_green_light"
-            android:textSize="14sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/lbDestZipFile"/>
+            android:textCursorDrawable="@color/etCursor"
+            android:textSize="14sp" />
 
         <!--save and start service-->
         <Button
