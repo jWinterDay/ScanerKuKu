@@ -6,6 +6,6 @@
     <!--<string name="server">http://192.168.0.103:8000/send_scaner_info/</string>-->
     <string name="ferry">krym</string>
     <string name="networktype">wifi</string>
-    <string name="sourcefolder">/storage/sdcard0/Download/fortest</string>
+    <string name="sourcefolder">/storage/sdcard0/logs</string>
     <string name="destzipfile">/storage/sdcard0/Download/ziplog/logs.zip</string>
 </resources>

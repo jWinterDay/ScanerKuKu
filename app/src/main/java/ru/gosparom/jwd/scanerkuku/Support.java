@@ -30,6 +30,11 @@ public class Support {
 
     public static final int NOTIFY_ID = 6678;
 
+    private StringBuilder info = new StringBuilder("");
+
+    public String getInfo() {
+        return info.toString();
+    }
 
     public String getUrlParams(Map<String, String> params){
         boolean first = true;
@@ -178,8 +183,7 @@ public class Support {
     }
 
     //zip folder
-    public boolean zipFolder(Context ctx, File sourceFolder, File destFile) {
-        Map<String, String> result = new HashMap<>();
+    public boolean zipFolder(File sourceFolder, File destFile) {
         ZipOutputStream out = null;
 
         try {
@@ -192,6 +196,7 @@ public class Support {
                 entry.setSize(file.length());
                 entry.setTime(file.lastModified());
                 out.putNextEntry(entry);
+
                 FileInputStream in = new FileInputStream(file);
                 try {
                     IOUtils.copy(in, out);
@@ -203,17 +208,14 @@ public class Support {
         } catch (Exception e) {
             StringWriter errors = new StringWriter();
             e.printStackTrace(new PrintWriter(errors));
+            info.append("zipping error\n");
+            info.append(errors.toString());
 
-            //statusEl.append(errors.toString());
-            //result.put("result", "false");
-            //result.put("message", ctx.getResources().getString(R.string.error_due_zipping));
             return false;
         } finally {
             IOUtils.closeQuietly(out);
         }
 
-        //result.put("result", "true");
-        //result.put("message", ctx.getResources().getString(R.string.zipping_is_finished));
         return true;
     }
 

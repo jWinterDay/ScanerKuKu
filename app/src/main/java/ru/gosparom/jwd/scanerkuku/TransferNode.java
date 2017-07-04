@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -25,7 +26,7 @@ public class TransferNode {
     private Context ctx;
     private String URLServer;
     private SharedPreferences settings;
-    private StringBuilder res;// = new StringBuilder("");
+    private StringBuilder res = new StringBuilder("");
 
     public String getInfo() {
         return res.toString();
@@ -74,10 +75,21 @@ public class TransferNode {
         String prms = support.getJsonParams(params);
 
         File destFile = new File(destzipfile);
+        if (!destFile.exists()) {
+            try {
+                destFile.getParentFile().mkdirs();
+                destFile.createNewFile();
+            } catch (IOException e) {
+                res.append("cannot create new dest zip file");
+                return false;
+            }
+        }
 
-        boolean zipRes = support.zipFolder(ctx, sourceFile, destFile);
+        boolean zipRes = support.zipFolder(sourceFile, destFile);
         if(!zipRes) {
-            res.append("error on zip file\n");
+            String info = support.getInfo();
+            res.append(info);
+            //res.append("error on zip file\n");
             return false;
         }
 
