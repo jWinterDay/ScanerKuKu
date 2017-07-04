@@ -2,14 +2,14 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:fillViewport="true"
     android:scrollbarAlwaysDrawVerticalTrack="true">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="?android:attr/colorForeground"
         android:focusable="true"
         android:focusableInTouchMode="true">
@@ -98,7 +98,7 @@
             android:id="@+id/lbDestZipFile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="source folder"
+            android:text="dest zip file"
             android:layout_below="@+id/etSourceFolder"/>
 
         <EditText

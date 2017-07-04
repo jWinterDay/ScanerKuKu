@@ -21,24 +21,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class TransferNode extends AsyncTask<Context, Void, String> {
+public class TransferNode {
     private Context ctx;
     private String URLServer;
     private SharedPreferences settings;
-    private StringBuilder res = new StringBuilder("");
+    private StringBuilder res;// = new StringBuilder("");
 
-
-    @Override
-    protected String doInBackground(Context... params) {
-        ctx = params[0];
-
-        doSendFile();
-
+    public String getInfo() {
         return res.toString();
     }
 
     //send file
-    private void doSendFile() {
+    public boolean doSendFile(Context ctx) {
+        res = new StringBuilder("");
+        this.ctx = ctx;
         Support support = new Support();
 
         settings = ctx.getSharedPreferences(Support.PREFS_NAME, 0);
@@ -50,7 +46,7 @@ public class TransferNode extends AsyncTask<Context, Void, String> {
 
         if(host.matches("") || ferry.matches("") || networktype.matches("") || sourcefolder.matches("") || destzipfile.matches("")) {
             res.append("one or more settings is null\n");
-            return;
+            return false;
         }
 
         String urlpath = ctx.getResources().getString(R.string.urlpath);
@@ -62,7 +58,7 @@ public class TransferNode extends AsyncTask<Context, Void, String> {
         File sourceFile = new File(sourcefolder);
         if(!sourceFile.exists()) {
             res.append("source file not found\n");
-            return;
+            return false;
         }
 
         Map<String, String> params = new HashMap<>();
@@ -82,15 +78,15 @@ public class TransferNode extends AsyncTask<Context, Void, String> {
         boolean zipRes = support.zipFolder(ctx, sourceFile, destFile);
         if(!zipRes) {
             res.append("error on zip file\n");
-            return;
+            return false;
         }
 
-        sendToServer(prms, destFile);
+        return sendToServer(prms, destFile);
     }
 
 
     //http send
-    private void sendToServer(String params, File file) {
+    private boolean sendToServer(String params, File file) {
         String CRLF = "\r\n";// Line separator required by multipart/form-data.
         URLConnection connection;
         String boundary = Long.toHexString(System.currentTimeMillis());//Just generate some unique random value.
@@ -166,11 +162,14 @@ public class TransferNode extends AsyncTask<Context, Void, String> {
             res.append("zip file transfered\n");
         } catch (Exception e) {
             res.append("error on transmitting zip file to server\n");
+            return false;
         } finally {
             IOUtils.closeQuietly(writer);
             IOUtils.closeQuietly(os);
             IOUtils.closeQuietly(fis);
             IOUtils.closeQuietly(responseBr);
         }
+
+        return true;
     }
 }

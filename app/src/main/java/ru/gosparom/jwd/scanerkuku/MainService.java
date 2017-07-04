@@ -15,6 +15,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -128,13 +130,35 @@ public class MainService extends Service {
         mSocket.on("download", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Support support = new Support();
-
-                String uuidArg = (String)args[0];
-                String uuid = support.getUuid(ctx);
-                if(uuidArg.equals(uuid)) {
-                    new TransferNode().execute(ctx);
+                if (args.length == 0) {
+                    return;
                 }
+                final String uuidArg = (String) args[0];
+
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Support support = new Support();
+                        String deviceUuid = support.getUuid(ctx);
+                        String sn = support.getSerialNum();
+
+                        Map<String, String> params = new HashMap<>();
+                        params.put("uuid", deviceUuid);
+                        params.put("sn", sn);
+
+                        if(uuidArg.equals(deviceUuid)) {
+                            TransferNode tn = new TransferNode();
+                            boolean res = tn.doSendFile(ctx);
+                            String info = tn.getInfo();
+
+                            params.put("info", info);
+                            params.put("success", String.valueOf(res));
+                            String jsonAnsw = support.getJsonParams(params);
+                            mSocket.emit("dlanswer", jsonAnsw);
+                        }
+                    }
+                });
+                t.start();
             }
         });
 
