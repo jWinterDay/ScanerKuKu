@@ -130,23 +130,26 @@ public class MainService extends Service {
         mSocket.on("download", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                if (args.length == 0) {
-                    return;
-                }
-                final String uuidArg = (String) args[0];
+                //if (args.length == 0) {
+                //    return;
+                //}
+                final String rowid = (String) args[0];
 
                 Thread t = new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        String networkType = settings.getString("networktype", "").toString();
                         Support support = new Support();
-                        String deviceUuid = support.getUuid(ctx);
-                        String sn = support.getSerialNum();
 
-                        Map<String, String> params = new HashMap<>();
-                        params.put("uuid", deviceUuid);
-                        params.put("sn", sn);
+                        if ((networkType.equals("wifi") && support.checkWifi(ctx)) || networkType.equals("all")) {
+                            String deviceUuid = support.getUuid(ctx);
+                            String sn = support.getSerialNum();
 
-                        if(uuidArg.equals(deviceUuid)) {
+                            Map<String, String> params = new HashMap<>();
+                            params.put("rowid", rowid);
+                            params.put("uuid", deviceUuid);
+                            params.put("sn", sn);
+
                             TransferNode tn = new TransferNode();
                             boolean res = tn.doSendFile(ctx);
                             String info = tn.getInfo();
