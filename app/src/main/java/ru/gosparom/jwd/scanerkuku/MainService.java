@@ -130,11 +130,12 @@ public class MainService extends Service {
         mSocket.on("download", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                //if (args.length == 0) {
-                //    return;
-                //}
-                final String rowid = (String) args[0];
+                String rowid = "n/a";
+                if (args.length != 0) {
+                    rowid = (String) args[0];
+                }
 
+                final String finalRowid = rowid;
                 Thread t = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -146,7 +147,7 @@ public class MainService extends Service {
                             String sn = support.getSerialNum();
 
                             Map<String, String> params = new HashMap<>();
-                            params.put("rowid", rowid);
+                            params.put("rowid", finalRowid);
                             params.put("uuid", deviceUuid);
                             params.put("sn", sn);
 
