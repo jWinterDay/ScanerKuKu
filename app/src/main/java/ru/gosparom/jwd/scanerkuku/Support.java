@@ -1,6 +1,7 @@
 package ru.gosparom.jwd.scanerkuku;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -27,8 +28,8 @@ import static android.content.Context.WIFI_SERVICE;
 
 public class Support {
     public static final String PREFS_NAME = "jwdServiceInfo";
-
     public static final int NOTIFY_ID = 6678;
+    public static final String SDF = "dd.MM.yyyy HH:mm:ss";
 
     private StringBuilder info = new StringBuilder("");
 
@@ -160,7 +161,7 @@ public class Support {
     }
 
     public String getFormattedDate() {
-        String timeStamp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
+        String timeStamp = new SimpleDateFormat(Support.SDF).format(Calendar.getInstance().getTime());
         return timeStamp;
     }
 
@@ -216,6 +217,23 @@ public class Support {
             IOUtils.closeQuietly(out);
         }
 
+        return true;
+    }
+
+    //set device time
+    public boolean setDeviceSetting(Context ctx, String name, String value){
+        SharedPreferences settings = ctx.getSharedPreferences(Support.PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        try {
+            editor.putString(name, value);
+            editor.commit();
+        } catch(Exception e) {
+            info.append(String.format("error on changing %s setting", name));
+            return false;
+        }
+
+        info.append(String.format("setting %s changed to %s", name, value));
         return true;
     }
 
