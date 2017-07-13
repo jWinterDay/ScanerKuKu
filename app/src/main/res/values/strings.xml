@@ -11,6 +11,4 @@
     <string name="error_due_zipping">error due zipping</string>
     <string name="zipping_is_finished">zipping is finished</string>
     <string name="service_notification_name">MagService</string>
-
-
 </resources>

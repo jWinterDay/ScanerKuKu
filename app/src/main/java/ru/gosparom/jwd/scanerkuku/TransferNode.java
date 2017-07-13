@@ -46,7 +46,7 @@ public class TransferNode {
         String destzipfile = settings.getString("destzipfile", "").toString();
 
         if(host.matches("") || ferry.matches("") || networktype.matches("") || sourcefolder.matches("") || destzipfile.matches("")) {
-            res.append("one or more settings is null\n");
+            res.append("DEVMESSAGE. One or more settings is null\n");
             return false;
         }
 
@@ -58,7 +58,7 @@ public class TransferNode {
 
         File sourceFile = new File(sourcefolder);
         if(!sourceFile.exists()) {
-            res.append("source file not found\n");
+            res.append("DEVMESSAGE. source file not found\n");
             return false;
         }
 
@@ -80,7 +80,7 @@ public class TransferNode {
                 destFile.getParentFile().mkdirs();
                 destFile.createNewFile();
             } catch (IOException e) {
-                res.append("cannot create new dest zip file");
+                res.append("DEVMESSAGE. cannot create new dest zip file");
                 return false;
             }
         }
@@ -171,9 +171,9 @@ public class TransferNode {
             while ((output = responseBr.readLine()) != null) {
                 sb.append(output);
             }
-            res.append("zip file transfered\n");
+            res.append("DEVMESSAGE. zip file transfered\n");
         } catch (Exception e) {
-            res.append("error on transmitting zip file to server\n");
+            res.append("DEVMESSAGE. error on transmitting zip file to server\n");
             return false;
         } finally {
             IOUtils.closeQuietly(writer);

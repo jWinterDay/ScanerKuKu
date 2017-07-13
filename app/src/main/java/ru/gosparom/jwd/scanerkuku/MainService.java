@@ -125,28 +125,46 @@ public class MainService extends Service {
 
         //get server message
         mSocket.on("dev_download", new Emitter.Listener() {
+            String rowid;
+            String browserSourceId;
+
             @Override
             public void call(Object... args) {
-                String rowid = "n/a";
-                if (args.length != 0) {
-                    rowid = (String) args[0];
+                Map<String, String> params = new HashMap<>();
+
+                JSONObject data = (JSONObject) args[0];
+
+                try {
+                    rowid = data.getString("rowid");
+                    browserSourceId = data.getString("browserSourceId");
+                } catch (JSONException e) {
+                    params.put("browserSourceId", browserSourceId);
+                    params.put("info", "DEVMESSAGE. Wrong input data");
+                    params.put("success", "false");
+
+                    Support support = new Support();
+                    String jsonAnsw = support.getJsonParams(params);
+                    mSocket.emit("dev_dlanswer", jsonAnsw);
+
+                    return;
                 }
 
-                final String finalRowid = rowid;
                 Thread t = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         Support support = new Support();
 
                         Map<String, String> params = new HashMap<>();
-                        params.put("rowid", finalRowid);
+                        params.put("browserSourceId", browserSourceId);
+                        params.put("rowid", rowid);
                         params.put("uuid", support.getUuid(ctx));
                         params.put("sn", support.getSerialNum());
 
                         TransferNode tn = new TransferNode();
+                        boolean res = tn.doSendFile(ctx);
 
                         params.put("info", tn.getInfo());
-                        params.put("success", String.valueOf(tn.doSendFile(ctx)));
+                        params.put("success", String.valueOf(res));
                         String jsonAnsw = support.getJsonParams(params);
 
                         mSocket.emit("dev_dlanswer", jsonAnsw);
@@ -174,7 +192,7 @@ public class MainService extends Service {
                     browserSourceId = data.getString("browserSourceId");
                 } catch (JSONException e) {
                     params.put("browserSourceId", browserSourceId);
-                    params.put("info", "Неверные входные данные");
+                    params.put("info", "DEVMESSAGE. Wrong input data");
                     params.put("success", "false");
 
                     String jsonAnsw = gSupport.getJsonParams(params);
