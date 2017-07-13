@@ -52,8 +52,9 @@ public class MainService extends Service {
 
         String host = settings.getString("host", "").toString();
         if(host.matches("")) {
-            //stopSelf();
-            return START_NOT_STICKY;
+            //Toast.makeText(this, "ServiceKuKu stopped, host is null", Toast.LENGTH_SHORT).show();
+            stopSelf();
+            //return START_NOT_STICKY;
         }
 
         Support support = new Support();
@@ -61,15 +62,18 @@ public class MainService extends Service {
         if ((networkType.equals("wifi") && support.checkWifi(ctx)) || networkType.equals("all")) {
             //stub
         } else {
-            return START_NOT_STICKY;
+            //Toast.makeText(this, "ServiceKuKu stopped, network type is wrong", Toast.LENGTH_SHORT).show();
+            stopSelf();
+            //return START_NOT_STICKY;
         }
 
         try {
             mSocket = IO.socket(host);
             mSocket.connect();
         } catch (URISyntaxException e) {
-            //stopSelf();
-            return START_NOT_STICKY;
+            //Toast.makeText(this, "ServiceKuKu stopped, socket exception", Toast.LENGTH_SHORT).show();
+            stopSelf();
+            //return START_NOT_STICKY;
         }
 
         mSocket.off();//delete all listeners

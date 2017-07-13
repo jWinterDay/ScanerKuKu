@@ -1,5 +1,6 @@
 package ru.gosparom.jwd.scanerkuku;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.NetworkInfo;
@@ -235,6 +236,16 @@ public class Support {
 
         info.append(String.format("setting %s changed to %s", name, value));
         return true;
+    }
+
+    public boolean isServiceRunning(Context ctx, Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

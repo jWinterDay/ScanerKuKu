@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
 
-        <!--<receiver
+        <receiver
             android:enabled="true"
             android:name=".ServiceAutoStart"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
@@ -36,7 +36,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </receiver>-->
+        </receiver>
 
         <service android:name=".MainService"></service>
     </application>
