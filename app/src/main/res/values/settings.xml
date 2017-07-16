@@ -8,4 +8,5 @@
     <string name="networktype">wifi</string>
     <string name="sourcefolder">/storage/sdcard0/logs</string>
     <string name="destzipfile">/storage/sdcard0/Download/ziplog/logs.zip</string>
+    <string name="password">1501</string>
 </resources>

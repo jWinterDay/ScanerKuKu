@@ -56,10 +56,12 @@ public class MainActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
+        createPasswordDialog();
+    }
+
+    private void createPasswordDialog() {
         final EditText txtUrl = new EditText(this);
         txtUrl.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        txtUrl.setText("1501");
-
 
         new AlertDialog.Builder(this)
                 .setTitle("password")
@@ -69,12 +71,15 @@ public class MainActivity extends Activity {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String txt = txtUrl.getText().toString();
 
-                        dialog.cancel();
-                        if(txt.equals("1501")) {
+                        //dialog.cancel();
+                        String pass = getResources().getString(R.string.password);
+                        if(txt != null && txt != "" && txt.equals(pass)) {
                             checkSettings();
                         } else {
-                            Toast.makeText(ctx, getResources().getString(R.string.wrong_password), Toast.LENGTH_SHORT).show();
-                            finish();
+                            createPasswordDialog();
+                            dialog.cancel();
+                            //Toast.makeText(ctx, getResources().getString(R.string.wrong_password), Toast.LENGTH_SHORT).show();
+                            //finish();
                         }
                     }
                 })
