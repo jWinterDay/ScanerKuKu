@@ -39,11 +39,11 @@ public class TransferNode {
         Support support = new Support();
 
         settings = ctx.getSharedPreferences(Support.PREFS_NAME, 0);
-        String host = settings.getString("host", "").toString();
-        String ferry = settings.getString("ferry", "").toString();
-        String networktype = settings.getString("networktype", "").toString();
-        String sourcefolder = settings.getString("sourcefolder", "").toString();
-        String destzipfile = settings.getString("destzipfile", "").toString();
+        String host = settings.getString(Support.spHost, "").toString();
+        String ferry = settings.getString(Support.spFerry, "").toString();
+        String networktype = settings.getString(Support.spNetworkType, "").toString();
+        String sourcefolder = settings.getString(Support.spSourceFolder, "").toString();
+        String destzipfile = settings.getString(Support.spDestzipFile, "").toString();
 
         if(host.matches("") || ferry.matches("") || networktype.matches("") || sourcefolder.matches("") || destzipfile.matches("")) {
             res.append("DEVMESSAGE. One or more settings is null\n");
@@ -63,14 +63,14 @@ public class TransferNode {
         }
 
         Map<String, String> params = new HashMap<>();
-        params.put("host", host);
-        params.put("urlpath", urlpath);
-        params.put("ferry", ferry);
-        params.put("networktype", networktype);
-        params.put("sourcefolder", sourcefolder);
-        params.put("destzipfile", destzipfile);
-        params.put("uuid", uuid);
-        params.put("sn", sn);
+        params.put(Support.spHost, host);
+        params.put(Support.nwUrlPath, urlpath);
+        params.put(Support.spFerry, ferry);
+        params.put(Support.spNetworkType, networktype);
+        params.put(Support.spSourceFolder, sourcefolder);
+        params.put(Support.spDestzipFile, destzipfile);
+        params.put(Support.nwUuid, uuid);
+        params.put(Support.nwSn, sn);
 
         String prms = support.getJsonParams(params);
 

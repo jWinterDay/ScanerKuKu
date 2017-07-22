@@ -7,6 +7,8 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
+import android.widget.Toast;
+
 import com.google.gson.Gson;
 
 import org.apache.commons.io.IOUtils;
@@ -31,6 +33,30 @@ public class Support {
     public static final String PREFS_NAME = "jwdServiceInfo";
     public static final int NOTIFY_ID = 6678;
     public static final String SDF = "dd.MM.yyyy HH:mm:ss";
+
+
+    //shared preferences settings name
+    public static final String spHost = "host";
+    public static final String spFerry = "ferry";
+    public static final String spNetworkType = "networktype";
+    public static final String spSourceFolder = "sourcefolder";
+    public static final String spDestzipFile = "destzipfile";
+
+    //url settings
+    public static final String nwUrlPath = "urlpath";
+    public static final String nwUuid = "uuid";
+    public static final String nwSn = "sn";
+    public static final String nwIp4 = "ip4";
+    public static final String nwMac = "mac";
+    public static final String nwWifiName = "wifiname";
+    public static final String nwDeviceTimeStamp = "devicetimestamp";
+
+
+
+    //network types
+    public static final String networkWifi = "wifi";
+    public static final String networkAll = "all";
+
 
     private StringBuilder info = new StringBuilder("");
 
@@ -248,4 +274,15 @@ public class Support {
         return false;
     }
 
+    public static void toastMkText(Context ctx, String txt, int duration) {
+        if (!MainActivity.isVisible) {
+            return;
+        }
+
+        if (txt == null || txt.matches("")) {
+            return;
+        }
+
+        Toast.makeText(ctx, txt, duration).show();
+    }
 }

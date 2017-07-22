@@ -31,6 +31,25 @@ public class MainActivity extends Activity {
     EditText etDestZipFile;
     Button btnSave;
 
+    public static boolean isVisible = false;
+    private void setIsVisible(boolean visible) {
+        isVisible = visible;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        setIsVisible(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        setIsVisible(false);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +81,7 @@ public class MainActivity extends Activity {
     private void createPasswordDialog() {
         final EditText txtUrl = new EditText(this);
         txtUrl.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        txtUrl.setText("1501");
 
         new AlertDialog.Builder(this)
                 .setTitle("password")
@@ -95,11 +115,11 @@ public class MainActivity extends Activity {
         //user settings
         SharedPreferences settings = getSharedPreferences(Support.PREFS_NAME, 0);
 
-        String host = settings.getString("host", getResources().getString(R.string.host)).toString();
-        String ferry = settings.getString("ferry", getResources().getString(R.string.ferry)).toString();
-        String networktype = settings.getString("networktype", getResources().getString(R.string.networktype)).toString();
-        String sourcefolder = settings.getString("sourcefolder", getResources().getString(R.string.sourcefolder)).toString();
-        String destzipfile = settings.getString("destzipfile", getResources().getString(R.string.destzipfile)).toString();
+        String host = settings.getString(Support.spHost, getResources().getString(R.string.host)).toString();
+        String ferry = settings.getString(Support.spFerry, getResources().getString(R.string.ferry)).toString();
+        String networktype = settings.getString(Support.spNetworkType, getResources().getString(R.string.networktype)).toString();
+        String sourcefolder = settings.getString(Support.spSourceFolder, getResources().getString(R.string.sourcefolder)).toString();
+        String destzipfile = settings.getString(Support.spDestzipFile, getResources().getString(R.string.destzipfile)).toString();
 
         etHost.setText(host);
         etFerry.setText(ferry);
@@ -120,15 +140,16 @@ public class MainActivity extends Activity {
         String destzipfile = etDestZipFile.getText().toString();
 
         if(host.matches("") || ferry.matches("") || networktype.matches("") || sourcefolder.matches("") || destzipfile.matches("")) {
-            Toast.makeText(this, getResources().getString(R.string.failed_to_save_empty_settings), Toast.LENGTH_SHORT).show();
+            String txt = getResources().getString(R.string.failed_to_save_empty_settings);
+            Toast.makeText(this, txt, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        editor.putString("host", host);
-        editor.putString("ferry", ferry);
-        editor.putString("networktype", networktype);
-        editor.putString("sourcefolder", sourcefolder);
-        editor.putString("destzipfile", destzipfile);
+        editor.putString(Support.spHost, host);
+        editor.putString(Support.spFerry, ferry);
+        editor.putString(Support.spNetworkType, networktype);
+        editor.putString(Support.spSourceFolder, sourcefolder);
+        editor.putString(Support.spDestzipFile, destzipfile);
         editor.commit();
 
         startService(new Intent(this, MainService.class));

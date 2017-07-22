@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -24,8 +27,18 @@ import org.json.JSONObject;
 
 public class MainService extends Service {
     private Context ctx = this;
-    private Socket mSocket;
+    private Socket mSocket = null;
     private SharedPreferences settings;
+
+    TimerTask checkingTimerTask;
+    Handler handler = new Handler();
+    Timer t = new Timer();
+    private long alarmDelay = 10*1000;
+    private long alarmRepeat = 10*1000;
+
+    private boolean isServiceRunning = false;
+
+
 
     @Nullable
     @Override
@@ -35,50 +48,90 @@ public class MainService extends Service {
 
     @Override
     public void onCreate() {
-        Toast.makeText(this, "ServiceKuKu created", Toast.LENGTH_SHORT).show();
         super.onCreate();
+
+        Support.toastMkText(ctx, "onCreate()", Toast.LENGTH_SHORT);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mSocket.close();
-        Toast.makeText(this, "ServiceKuKu stopped", Toast.LENGTH_SHORT).show();
+
+        if(mSocket != null && mSocket.connected()) {
+            try {
+                mSocket.disconnect();
+                mSocket.close();
+            } catch (Exception e) {
+
+            }
+        }
+
+        Support.toastMkText(ctx, "onDestroy()", Toast.LENGTH_SHORT);
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        settings = getSharedPreferences(Support.PREFS_NAME, 0);
+    private void selfChecking() {
+        checkingTimerTask = new TimerTask() {
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        connectToServer();
+                        //boolean isConnected = connectToServer();
+                        //if(isConnected) {
+                        //   t.cancel();
+                        //}
+                    }
+                });
+            }};
 
-        String host = settings.getString("host", "").toString();
-        if(host.matches("")) {
-            //Toast.makeText(this, "ServiceKuKu stopped, host is null", Toast.LENGTH_SHORT).show();
-            stopSelf();
-            //return START_NOT_STICKY;
+        t.schedule(checkingTimerTask, alarmDelay, alarmRepeat);
+    }
+
+    private boolean connectToServer() {
+        if(mSocket != null && mSocket.connected()) {
+            Support.toastMkText(ctx, "mSocket already connected", Toast.LENGTH_SHORT);
+            return true;
+        }
+
+        settings = getSharedPreferences(Support.PREFS_NAME, 0);
+        String host = settings.getString(Support.spHost, "").toString();
+        String networkType = settings.getString(Support.spNetworkType, "").toString();
+
+        if(host == null || networkType == null || host.matches("") || networkType.matches("")) {
+            Support.toastMkText(ctx, "host or network is null", Toast.LENGTH_SHORT);
+            return false;
         }
 
         Support support = new Support();
-        String networkType = settings.getString("networktype", "").toString();
-        if ((networkType.equals("wifi") && support.checkWifi(ctx)) || networkType.equals("all")) {
-            //stub
+        boolean isWifi = support.checkWifi(this);
+        if(networkType.equals(Support.networkWifi) && !isWifi) {
+            Support.toastMkText(ctx, "wifi adapter must be switched on", Toast.LENGTH_SHORT);
+            return false;
+        }
+
+        if ( networkType.equals(Support.networkWifi) || networkType.equals(Support.networkAll) ) {
+            try {
+                mSocket = IO.socket(host);
+                mSocket.io().reconnection(true);
+                mSocket.connect();
+                mSocket.off();//delete all listeners
+                setSocketListeners();
+
+                //Support.toastMkText(ctx, "mSocket is OK", Toast.LENGTH_SHORT);
+            } catch (URISyntaxException e) {
+                Support.toastMkText(ctx, "mSocket exception", Toast.LENGTH_SHORT);
+                return false;
+            }
         } else {
-            //Toast.makeText(this, "ServiceKuKu stopped, network type is wrong", Toast.LENGTH_SHORT).show();
-            stopSelf();
-            //return START_NOT_STICKY;
+            Support.toastMkText(ctx, String.format("network type must be '%s' or '%s'", Support.networkWifi, Support.networkAll), Toast.LENGTH_SHORT);
+            return false;
         }
 
-        try {
-            mSocket = IO.socket(host);
-            mSocket.connect();
-        } catch (URISyntaxException e) {
-            //Toast.makeText(this, "ServiceKuKu stopped, socket exception", Toast.LENGTH_SHORT).show();
-            stopSelf();
-            //return START_NOT_STICKY;
-        }
+        boolean isConnected = mSocket.connected();
+        Support.toastMkText(ctx, "mSocket.isConnected=" + String.valueOf(isConnected), Toast.LENGTH_SHORT);
+        return isConnected;
+    }
 
-        mSocket.off();//delete all listeners
-        startForeground();
-
+    private boolean setSocketListeners() {
         //server kuku
         mSocket.on("dev_kuku", new Emitter.Listener() {
             @Override
@@ -87,28 +140,27 @@ public class MainService extends Service {
                     public void run() {
                         try {
                             Support support = new Support();
-                            String ferry = settings.getString("ferry", "").toString();
-                            String networkType = settings.getString("networktype", "").toString();
+                            String host = settings.getString(Support.spHost, "").toString();
+                            String ferry = settings.getString(Support.spFerry, "").toString();
+                            String networkType = settings.getString(Support.spNetworkType, "").toString();
 
                             String ip4 = support.getIp4(ctx);
                             String mac = support.getMac(ctx);
                             String wifiName = support.getWifiName(ctx);
                             String sn = support.getSerialNum();
-                            String host = settings.getString("host", "").toString();
                             String uuid = support.getUuid(ctx);
                             String curTimeStamp = support.getFormattedDate();
 
                             Map<String, String> params = new HashMap<>();
-                            params.put("ip4", ip4);
-                            params.put("mac", mac);
-                            params.put("uuid", uuid);
-                            params.put("wifiname", wifiName);
-                            params.put("sn", sn);
-                            params.put("sn", sn);
-                            params.put("host", host);
-                            params.put("ferry", ferry);
-                            params.put("networktype", networkType);
-                            params.put("devicetimestamp", curTimeStamp.toString());
+                            params.put(Support.nwIp4, ip4);
+                            params.put(Support.nwMac, mac);
+                            params.put(Support.nwUuid, uuid);
+                            params.put(Support.nwWifiName, wifiName);
+                            params.put(Support.nwSn, sn);
+                            params.put(Support.spHost, host);
+                            params.put(Support.spFerry, ferry);
+                            params.put(Support.spNetworkType, networkType);
+                            params.put(Support.nwDeviceTimeStamp, curTimeStamp.toString());
 
                             String jsonParams = support.getJsonParams(params);
 
@@ -224,7 +276,18 @@ public class MainService extends Service {
             }
         });
 
-        return START_STICKY;//super.onStartCommand(intent, flags, startId);
+        return true;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (!isServiceRunning) {
+            selfChecking();
+            startForeground();
+
+            isServiceRunning = true;
+        }
+        return START_STICKY;
     }
 
 
