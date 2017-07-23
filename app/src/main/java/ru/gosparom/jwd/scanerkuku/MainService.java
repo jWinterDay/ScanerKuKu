@@ -57,6 +57,7 @@ public class MainService extends Service {
     public void onDestroy() {
         super.onDestroy();
 
+        //socket
         if(mSocket != null && mSocket.connected()) {
             try {
                 mSocket.disconnect();
@@ -65,6 +66,12 @@ public class MainService extends Service {
 
             }
         }
+
+        //timer
+        if (checkingTimerTask != null) {
+            checkingTimerTask.cancel();
+        }
+        t.cancel();
 
         Support.toastMkText(ctx, "onDestroy()", Toast.LENGTH_SHORT);
     }

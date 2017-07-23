@@ -2,21 +2,15 @@ package ru.gosparom.jwd.scanerkuku;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -158,5 +152,54 @@ public class MainActivity extends Activity {
     //btn stop
     public void Stop(View v) {
         stopService(new Intent(this, MainService.class));
+    }
+
+
+
+    //***menu***
+    private void setMenuItem(Menu menu) {
+        SharedPreferences settings = getSharedPreferences(Support.PREFS_NAME, 0);
+
+        MenuItem miAutoStart = menu.findItem(R.id.miAutoStart);
+        boolean isAutoStart = settings.getBoolean(Support.spAutoStart, false);
+
+        miAutoStart.setChecked(isAutoStart);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mainmenu, menu);
+        //setMenuItem(menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        setMenuItem(menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+
+        int id = item.getItemId();
+
+        switch(id) {
+            case R.id.miAutoStart:
+                SharedPreferences settings = getSharedPreferences(Support.PREFS_NAME, 0);
+                SharedPreferences.Editor editor = settings.edit();
+
+                item.setChecked(!item.isChecked());
+
+                editor.putBoolean(Support.spAutoStart, item.isChecked());
+                editor.commit();
+
+                break;
+        }
+
+        return true;
     }
 }

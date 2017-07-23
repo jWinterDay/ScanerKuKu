@@ -30,17 +30,18 @@ import java.util.zip.ZipOutputStream;
 import static android.content.Context.WIFI_SERVICE;
 
 public class Support {
-    public static final String PREFS_NAME = "jwdServiceInfo";
     public static final int NOTIFY_ID = 6678;
     public static final String SDF = "dd.MM.yyyy HH:mm:ss";
 
 
     //shared preferences settings name
+    public static final String PREFS_NAME = "jwdServiceInfo";
     public static final String spHost = "host";
     public static final String spFerry = "ferry";
     public static final String spNetworkType = "networktype";
     public static final String spSourceFolder = "sourcefolder";
     public static final String spDestzipFile = "destzipfile";
+    public static final String spAutoStart = "autostart";
 
     //url settings
     public static final String nwUrlPath = "urlpath";
@@ -279,7 +280,19 @@ public class Support {
             return;
         }
 
-        if (txt == null || txt.matches("")) {
+        if (txt == null) {
+            return;
+        }
+
+        Toast.makeText(ctx, txt, duration).show();
+    }
+
+    public static void toastMkText(Context ctx, CharSequence txt, int duration) {
+        if (!MainActivity.isVisible) {
+            return;
+        }
+
+        if (txt == null) {
             return;
         }
 
