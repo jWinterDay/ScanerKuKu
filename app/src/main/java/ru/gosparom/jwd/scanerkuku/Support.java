@@ -15,7 +15,9 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
@@ -212,7 +214,7 @@ public class Support {
     }
 
     //zip folder
-    public boolean zipFolder(File sourceFolder, File destFile) {
+    /*public boolean zipFolder(File sourceFolder, File destFile) {
         ZipOutputStream out = null;
 
         try {
@@ -246,9 +248,69 @@ public class Support {
         }
 
         return true;
+    }*/
+
+
+    //zip folder with subfolders
+    public boolean zipFolder(File sourceFolder, File destFile) {
+        ZipOutputStream zos = null;
+        try {
+            zos = new ZipOutputStream(new FileOutputStream(destFile));
+
+            zipDir(sourceFolder.getPath(), zos);
+        } catch (IOException e) {
+            StringWriter errors = new StringWriter();
+            e.printStackTrace(new PrintWriter(errors));
+            info.append("zos error\n");
+            info.append(errors.toString());
+
+            return false;
+        } finally {
+            IOUtils.closeQuietly(zos);
+        }
+
+        return true;
     }
 
-    //set device time
+    public void zipDir(String dir2zip, ZipOutputStream zos) throws IOException {
+            File zipDir = new File(dir2zip);//create a new File object based on the directory we have to zip
+            String[] dirList = zipDir.list();//get a listing of the directory content
+
+            byte[] readBuffer = new byte[2156];
+            int bytesIn;
+
+            //loop through dirList, and zip the files
+            for(int i=0; i<dirList.length; i++)
+            {
+                File f = new File(zipDir, dirList[i]);
+                if(f.isDirectory())
+                {
+                    //if the File object is a directory, call this
+                    //function again to add its content recursively
+                    String filePath = f.getPath();
+                    zipDir(filePath, zos);
+                    //loop again
+                    continue;
+                }
+                //if we reached here, the File object f was not a directory
+                //create a FileInputStream on top of f
+                FileInputStream fis = new FileInputStream(f);
+                //create a new zip entry
+                ZipEntry anEntry = new ZipEntry(f.getPath());
+                //place the zip entry in the ZipOutputStream object
+                zos.putNextEntry(anEntry);
+                //now write the content of the file to the ZipOutputStream
+                while((bytesIn = fis.read(readBuffer)) != -1)
+                {
+                    zos.write(readBuffer, 0, bytesIn);
+                }
+                //close the Stream
+                fis.close();
+            }
+    }
+
+
+        //set device time
     public boolean setDeviceSetting(Context ctx, String name, String value){
         SharedPreferences settings = ctx.getSharedPreferences(Support.PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();

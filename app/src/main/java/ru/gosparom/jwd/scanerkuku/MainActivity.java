@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
     private void createPasswordDialog() {
         final EditText txtUrl = new EditText(this);
         txtUrl.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        txtUrl.setText("1501");
+        //txtUrl.setText("1501");
 
         new AlertDialog.Builder(this)
                 .setTitle("password")

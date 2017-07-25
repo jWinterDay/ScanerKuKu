@@ -50,7 +50,7 @@ public class MainService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        Support.toastMkText(ctx, "onCreate()", Toast.LENGTH_SHORT);
+        //Support.toastMkText(ctx, "onCreate()", Toast.LENGTH_SHORT);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class MainService extends Service {
         }
         t.cancel();
 
-        Support.toastMkText(ctx, "onDestroy()", Toast.LENGTH_SHORT);
+        //Support.toastMkText(ctx, "onDestroy()", Toast.LENGTH_SHORT);
     }
 
     private void selfChecking() {
@@ -95,7 +95,7 @@ public class MainService extends Service {
 
     private boolean connectToServer() {
         if(mSocket != null && mSocket.connected()) {
-            Support.toastMkText(ctx, "mSocket already connected", Toast.LENGTH_SHORT);
+            //Support.toastMkText(ctx, "mSocket already connected", Toast.LENGTH_SHORT);
             return true;
         }
 
@@ -134,7 +134,7 @@ public class MainService extends Service {
         }
 
         boolean isConnected = mSocket.connected();
-        Support.toastMkText(ctx, "mSocket.isConnected=" + String.valueOf(isConnected), Toast.LENGTH_SHORT);
+        //Support.toastMkText(ctx, "mSocket.isConnected=" + String.valueOf(isConnected), Toast.LENGTH_SHORT);
         return isConnected;
     }
 

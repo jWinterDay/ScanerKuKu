@@ -37,6 +37,10 @@ android {
             renderscriptDebuggable false
             minifyEnabled false
             zipAlignEnabled true
+
+            applicationVariants.all { variant ->
+                renameAPK(variant, defaultConfig, "_R")
+            }
         }
     }
 }
