@@ -150,6 +150,8 @@ public class MainService extends Service {
                             String host = settings.getString(Support.spHost, "").toString();
                             String ferry = settings.getString(Support.spFerry, "").toString();
                             String networkType = settings.getString(Support.spNetworkType, "").toString();
+                            String sourceFolder = settings.getString(Support.spSourceFolder, "").toString();
+                            String destZipFile = settings.getString(Support.spDestzipFile, "").toString();
 
                             String ip4 = support.getIp4(ctx);
                             String mac = support.getMac(ctx);
@@ -168,6 +170,8 @@ public class MainService extends Service {
                             params.put(Support.spFerry, ferry);
                             params.put(Support.spNetworkType, networkType);
                             params.put(Support.nwDeviceTimeStamp, curTimeStamp.toString());
+                            params.put(Support.spSourceFolder, sourceFolder);
+                            params.put(Support.spDestzipFile, destZipFile);
 
                             String jsonParams = support.getJsonParams(params);
 
